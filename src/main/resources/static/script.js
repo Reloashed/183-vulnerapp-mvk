@@ -16,7 +16,7 @@ function onLoginSubmit(event) {
   const username = event.target[0].value;
   const password = event.target[1].value;
   event.preventDefault();
-  fetch("/api/user/fakelogin", {
+  fetch("/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -35,6 +35,10 @@ function onLogoutSubmit(event) {
   loginCheck();
 }
 
+function getToken() {
+  return document.cookie.split(";").find(s => s.includes("XSRF-TOKEN")).split("=")[1]
+}
+
 function onBlogSubmit(event) {
   const data = {"title": event.target[0].value, "body": event.target[1].value};
   event.preventDefault();
@@ -42,6 +46,7 @@ function onBlogSubmit(event) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-XSRF-TOKEN": getToken()
     },
     body: JSON.stringify(data),
   })
