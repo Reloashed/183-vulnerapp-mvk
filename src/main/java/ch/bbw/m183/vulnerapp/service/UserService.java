@@ -14,27 +14,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
 @Slf4j
-@Service
+@Service("userService")
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private MessageSource messageSource;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -57,12 +53,11 @@ public class UserService {
 
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String name)
+	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 
-		Optional<UserEntity> user = userRepository.findById(name);
-		if (user.isPresent()) {
+		UserEntity user = userRepository.findById(username).orElseThrow();
+		if (user == null) {
 			return new org.springframework.security.core.userdetails.User(
 					" ", " ", true, true, true, true,
 					getAuthorities(Arrays.asList(
@@ -70,7 +65,7 @@ public class UserService {
 		}
 
 		return new org.springframework.security.core.userdetails.User(
-				user.getEmail(), user.getPassword(), user.isEnabled(), true, true,
+				user.getUsername(), user.getPassword(), true, true, true,
 				true, getAuthorities(user.getRoles()));
 	}
 

@@ -1,8 +1,13 @@
 package ch.bbw.m183.vulnerapp.service;
 
+import java.util.List;
 import java.util.stream.Stream;
 
+import ch.bbw.m183.vulnerapp.datamodel.PrivilegeEntity;
+import ch.bbw.m183.vulnerapp.datamodel.RoleEntity;
 import ch.bbw.m183.vulnerapp.datamodel.UserEntity;
+import ch.bbw.m183.vulnerapp.repository.PrivilegeRepository;
+import ch.bbw.m183.vulnerapp.repository.RoleRepository;
 import ch.bbw.m183.vulnerapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -18,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
 
 	private final UserRepository userRepository;
+	private final RoleRepository roleRepository;
+	private final PrivilegeRepository privilegeRepository;
 
 	public UserEntity createUser(UserEntity newUser) {
 		return userRepository.save(newUser);
@@ -33,8 +40,49 @@ public class AdminService {
 
 	@EventListener(ContextRefreshedEvent.class)
 	public void loadTestUsers() {
-		Stream.of(new UserEntity().setUsername("admin").setFullname("Super Admin").setPassword("{noop}super5ecret"),
-						new UserEntity().setUsername("fuu").setFullname("Johanna Doe").setPassword("{noop}bar"))
-				.forEach(this::createUser);
+
+		// Privileges
+		PrivilegeEntity whoami = new PrivilegeEntity()
+				.setId(1L)
+				.setName("WHOAMI");
+
+		PrivilegeEntity postBlog = new PrivilegeEntity()
+				.setId(2L)
+				.setName("POST_BLOG");
+
+		privilegeRepository.save(whoami);
+		privilegeRepository.save(postBlog);
+
+		// USER role
+		RoleEntity userRole = new RoleEntity()
+				.setId(1L)
+				.setName("ROLE_USER")
+				.setPrivileges(List.of(whoami, postBlog));
+
+		// ADMIN role
+		RoleEntity adminRole = new RoleEntity()
+				.setId(2L)
+				.setName("ROLE_ADMIN")
+				.setPrivileges(List.of(whoami, postBlog));
+
+		roleRepository.save(userRole);
+		roleRepository.save(adminRole);
+
+		// User with USER role
+		UserEntity user = new UserEntity()
+				.setUsername("user")
+				.setFullname("Test User")
+				.setPassword("{noop}password")
+				.setRoles(List.of(userRole));
+
+		// User with ADMIN role
+		UserEntity admin = new UserEntity()
+				.setUsername("admin")
+				.setFullname("Super Admin")
+				.setPassword("{noop}super5ecret")
+				.setRoles(List.of(adminRole));
+
+		createUser(user);
+		createUser(admin);
 	}
 }

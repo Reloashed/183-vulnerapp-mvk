@@ -27,8 +27,10 @@ public class UserEntity {
 	@JoinTable(
 			name = "users_roles",
 			joinColumns = @JoinColumn(
-					name = "user_id", referencedColumnName = "id"),
+					name = "user_id",
+					referencedColumnName = "username"),
 			inverseJoinColumns = @JoinColumn(
-					name = "role_id", referencedColumnName = "id"))
+					name = "role_id",
+					referencedColumnName = "id"))
 	private Collection<RoleEntity> roles;
 }

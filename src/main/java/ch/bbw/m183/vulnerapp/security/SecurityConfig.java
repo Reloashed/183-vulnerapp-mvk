@@ -40,9 +40,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(HttpMethod.POST, "/api/blog")
-                                .authenticated()
-                                    .requestMatchers(HttpMethod.GET, "/api/user/whoami")
-                                .authenticated()
+                                .hasAuthority("POST_BLOG")
+                                .requestMatchers(HttpMethod.GET, "/api/user/whoami")
+                                .hasAuthority("WHOAMI")
+                                .requestMatchers("/api/admin/*")
+                                .hasRole("ADMIN")
                                 .anyRequest()
                                 .permitAll())
                 .build();
