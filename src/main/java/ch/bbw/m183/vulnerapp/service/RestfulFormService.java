@@ -1,8 +1,10 @@
 package ch.bbw.m183.vulnerapp.service;
 
+import ch.bbw.m183.vulnerapp.datamodel.UserDto;
 import ch.bbw.m183.vulnerapp.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
@@ -35,7 +37,7 @@ public class RestfulFormService {
                 .successHandler((request, response, auth) -> {
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setContentType("application/json");
-                    response.getWriter().write(objectMapper.writeValueAsString(userRepository.findById(auth.getName()).orElseThrow()));
+                    response.getWriter().write(objectMapper.writeValueAsString(new UserDto(userRepository.findById(auth.getName()).orElseThrow().getUsername(), userRepository.findById(auth.getName()).orElseThrow().getFullname())));
                 });
     }
 

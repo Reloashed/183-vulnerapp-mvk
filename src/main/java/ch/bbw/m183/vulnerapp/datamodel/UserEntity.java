@@ -23,7 +23,7 @@ public class UserEntity {
 	@Column
 	String password;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "users_roles",
 			joinColumns = @JoinColumn(

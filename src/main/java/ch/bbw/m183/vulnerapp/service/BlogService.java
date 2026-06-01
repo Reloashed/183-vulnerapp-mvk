@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 import ch.bbw.m183.vulnerapp.datamodel.BlogEntity;
 import ch.bbw.m183.vulnerapp.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.Sanitizers;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,8 @@ public class BlogService {
 
 	public UUID createBlog(BlogEntity blog) {
 		blog.setId(UUID.randomUUID());
+		blog.setTitle(new HtmlPolicyBuilder().toFactory().sanitize(blog.getTitle()));
+		blog.setBody(new HtmlPolicyBuilder().toFactory().sanitize(blog.getBody()));
 		return blogRepository.save(blog)
 				.getId();
 	}

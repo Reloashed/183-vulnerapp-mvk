@@ -29,12 +29,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private RoleRepository roleRepository;
-
 	private final EntityManager entityManager;
 
 	public UserEntity whoami(String username, String password) {
@@ -51,49 +45,5 @@ public class UserService {
 	@StandardException
 	public static class InvalidPasswordException extends RuntimeException {
 
-	}
-
-	public UserDetails loadUserByUsername(String username)
-			throws UsernameNotFoundException {
-
-		UserEntity user = userRepository.findById(username).orElseThrow();
-		if (user == null) {
-			return new org.springframework.security.core.userdetails.User(
-					" ", " ", true, true, true, true,
-					getAuthorities(Arrays.asList(
-							roleRepository.findByName("ROLE_USER"))));
-		}
-
-		return new org.springframework.security.core.userdetails.User(
-				user.getUsername(), user.getPassword(), true, true, true,
-				true, getAuthorities(user.getRoles()));
-	}
-
-	private Collection<? extends GrantedAuthority> getAuthorities(
-			Collection<RoleEntity> roles) {
-
-		return getGrantedAuthorities(getPrivileges(roles));
-	}
-
-	private List<String> getPrivileges(Collection<RoleEntity> roles) {
-
-		List<String> privileges = new ArrayList<>();
-		List<PrivilegeEntity> collection = new ArrayList<>();
-		for (RoleEntity role : roles) {
-			privileges.add(role.getName());
-			collection.addAll(role.getPrivileges());
-		}
-		for (PrivilegeEntity item : collection) {
-			privileges.add(item.getName());
-		}
-		return privileges;
-	}
-
-	private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		for (String privilege : privileges) {
-			authorities.add(new SimpleGrantedAuthority(privilege));
-		}
-		return authorities;
 	}
 }
