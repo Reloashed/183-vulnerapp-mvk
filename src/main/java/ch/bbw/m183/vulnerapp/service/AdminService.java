@@ -1,7 +1,6 @@
 package ch.bbw.m183.vulnerapp.service;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import ch.bbw.m183.vulnerapp.datamodel.PrivilegeEntity;
 import ch.bbw.m183.vulnerapp.datamodel.RoleEntity;
@@ -72,14 +71,14 @@ public class AdminService {
 		UserEntity user = new UserEntity()
 				.setUsername("user")
 				.setFullname("Test User")
-				.setPassword("{noop}password")
+				.setPassword("{bcrypt}$2a$12$86qz22VhnFrFbH.chW7qyO3ZoUlfTQoHhQpB0cjETG8rI/9Mz5flG") //password
 				.setRoles(List.of(userRole));
 
 		// User with ADMIN role
 		UserEntity admin = new UserEntity()
 				.setUsername("admin")
 				.setFullname("Super Admin")
-				.setPassword("{noop}super5ecret")
+				.setPassword("{bcrypt}$2a$12$eB.n21GlOcdJBPfYeNbFEuo5fVAGcMZZwVT3NqaEvM.xyqt6A7P0K") //super5ecret
 				.setRoles(List.of(adminRole));
 
 		createUser(user);
