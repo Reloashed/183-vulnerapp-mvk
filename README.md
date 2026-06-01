@@ -1,21 +1,4 @@
-# Vulnerapp
-
--- A Vulnerable Sample Spring Boot Application
-
-This application uses a relatively modern stack but is still vulnerable to a set of attacks.
-Featuring:
-
-- [XSS](https://portswigger.net/web-security/cross-site-scripting)
-- [SQLi](https://portswigger.net/web-security/sql-injection)
-- [CSRF](https://portswigger.net/web-security/csrf)
-- [SSRF](https://portswigger.net/web-security/ssrf)
-- Fake Logins
-- Info Exposure
-- Plain Passwords
-- ...
-
-Either start it via IDE or start it with the following command (it will hang). Then visit http://localhost:8080/
-
-```console
-./gradlew bootRun
-```
+Die Implementationen beinhalten verschiedenste Sicherheitsmassnahmen. Unter anderem ist es ein einfaches Login welches vorher noch nicht funtioniert hat mit Password BCrypt encryption. Unter anderem haben die User auch verschiedene Rollen welche jeweils andere Rechte haben. Dazu wird jeder Blog Input auch nach versteckten xss versuchen validiert und gereinigt.
+Weitere Implementationen könnten verschiedenste Sachen beinhalten. Ein grosser Schritt zum Beispiel könnten JWT Tokens sein oder einen Schutz gegen Brute Force Attacks bei welchem es nach mehreren Passwort versuchen ein Timeout gibt.
+Meine Schwierigkeiten lagen vorallem beim RBAC dieses fand ich schwierig zu implementieren weil wir dort auch am wenigsten unterstützung hatten und die ganzen Abhängigkeiten zu verstehen war ein wenig kompliziert. Bei den Tests dafür habe ich mir dann ein wenig LLM Nutzung erlaubt :)
+Aufwand und Ertrag von Sicherheitsmassnahmen find ich schon noch wichtig. Ich denke dass es sicher sinnvoll ist sicher eine solid foundation zu haben was die Security angeht aber wenn man nicht gerade eine grosse Firma ist mit einem riesigen Budget ist es auch nicht gerade nötig die sicherste Applikation auf der erde zu haben. Generell finde ich aber dass es sich lohnt die Zeit für eine gute Security zu investieren.
